@@ -275,9 +275,9 @@
 
   <!-- Step 4: Done -->
   <section class="screen" id="doneScreen">
-    <i class="bi bi-check-circle-fill icon-top" style="color:#2ecc71;"></i>
-    <h1 class="title">It's a date! 💌</h1>
-    <p class="note" id="doneNote">Your email app is opening with the confirmation ready. Just hit send!</p>
+    <i class="bi bi-heart-fill icon-top pulse" id="doneIcon" style="color:#ff4d6d;"></i>
+    <h1 class="title" id="doneTitle">Sending...</h1>
+    <p class="note" id="doneNote">Hold tight, delivering your confirmation 💌</p>
   </section>
 
   <footer class="brand">made with <i class="bi bi-heart-fill"></i></footer>
@@ -451,16 +451,57 @@ document.querySelectorAll('.place-card').forEach(card=>{
   });
 });
 
-/* ====== Step 4: Send confirmation ====== */
+/* ====== Step 4: Send confirmation (direct, no email app) ====== */
 confirmBtn.addEventListener('click', ()=>{
-  const subject = encodeURIComponent("She said YES! Our evening plan 💌");
-  const body = encodeURIComponent(
-    `Great news!\n\nThe evening date is confirmed.\nDestination: ${chosenPlace}\nHer email: ${herEmailValue}\n\nGet ready for an unforgettable evening! 💕`
-  );
-  const mailto = `mailto:${encodeURIComponent(MY_EMAIL)}?cc=${encodeURIComponent(herEmailValue)}&subject=${subject}&body=${body}`;
-  window.location.href = mailto;
+  confirmBtn.disabled = true;
+  confirmBtn.innerHTML = 'Sending... <i class="bi bi-arrow-repeat"></i>';
+
+  const doneIcon = document.getElementById('doneIcon');
+  const doneTitle = document.getElementById('doneTitle');
+  const doneNote = document.getElementById('doneNote');
+
   showScreen('doneScreen');
-  clapsAndConfetti();
+  doneIcon.className = 'bi bi-heart-fill icon-top pulse';
+  doneIcon.style.color = '#ff4d6d';
+  doneTitle.textContent = 'Sending...';
+  doneNote.textContent = 'Hold tight, delivering your confirmation 💌';
+
+  const payload = {
+    name: "Evening Date Confirmation",
+    email: herEmailValue,
+    _cc: herEmailValue,
+    _subject: "She said YES! Our evening plan 💌",
+    _template: "box",
+    _captcha: "false",
+    message:
+      `Great news! The evening date is confirmed.\n\n` +
+      `Destination: ${chosenPlace}\n` +
+      `Her email: ${herEmailValue}\n\n` +
+      `Get ready for an unforgettable evening!`
+  };
+
+  fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MY_EMAIL)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    doneIcon.className = 'bi bi-check-circle-fill icon-top';
+    doneIcon.style.color = '#2ecc71';
+    doneTitle.textContent = "It's a date! 💌";
+    doneNote.textContent = 'The confirmation email was sent — to you and to her. No app needed!';
+    clapsAndConfetti();
+  })
+  .catch(err => {
+    doneIcon.className = 'bi bi-exclamation-triangle-fill icon-top';
+    doneIcon.style.color = '#e0a800';
+    doneTitle.textContent = "Almost there...";
+    doneNote.textContent = "Couldn't reach the mail server. Check your connection and try again.";
+    confirmBtn.disabled = false;
+    confirmBtn.innerHTML = 'Try Again <i class="bi bi-send-heart-fill"></i>';
+    showScreen('placeScreen');
+  });
 });
 </script>
 </body>

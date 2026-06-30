@@ -250,18 +250,18 @@
     <h2 class="subtitle" style="font-size:1.05rem;">Now, where should we go?</h2>
     <div class="places-grid" id="placesGrid">
       <div class="place-card" data-place="Coffee"><i class="bi bi-cup-hot-fill"></i><span>Coffee</span></div>
-      <div class="place-card" data-place="Dinner"><i class="bi bi-candle"></i><span>Dinner</span></div>
+      <div class="place-card" data-place="Dinner"><i class="bi bi-egg-fried"></i><span>Dinner</span></div>
       <div class="place-card" data-place="Evening Chat"><i class="bi bi-chat-heart-fill"></i><span>Evening Chat</span></div>
       <div class="place-card" data-place="Just a Walk"><i class="bi bi-flower2"></i><span>Just a Walk</span></div>
       <div class="place-card" data-place="Drink"><i class="bi bi-cup-straw"></i><span>Drink</span></div>
       <div class="place-card" data-place="Movie"><i class="bi bi-film"></i><span>Movie</span></div>
     </div>
-    <div class="input-wrap">
-      <i class="bi bi-pencil-fill"></i>
-      <input type="text" id="customPlace" placeholder="Or type your own idea (leave blank and I'll decide)">
+    <div class="input-wrap" id="locationWrap" style="display:none;">
+      <i class="bi bi-geo-alt-fill"></i>
+      <input type="text" id="customPlace" placeholder="Type the location (or leave blank and I'll decide)">
     </div>
     <div class="choice-msg" id="choiceMsg"></div>
-    <button class="btn btn-primary" id="confirmBtn">Submit <i class="bi bi-send-heart-fill"></i></button>
+    <button class="btn btn-primary" id="confirmBtn" disabled>Submit <i class="bi bi-send-heart-fill"></i></button>
   </section>
 
   <!-- Step 4: Done -->
@@ -402,9 +402,11 @@ document.getElementById('yesBtn').addEventListener('click', ()=>{
 });
 
 /* ====== Step 2: Place selection ====== */
-let chosenPlace = "";
+let chosenType = "";
+let chosenLocation = "";
 const choiceMsg = document.getElementById('choiceMsg');
 const confirmBtn = document.getElementById('confirmBtn');
+const locationWrap = document.getElementById('locationWrap');
 const customPlaceInput = document.getElementById('customPlace');
 const excellentLines = [
   "Excellent choice! 🌟",
@@ -416,20 +418,19 @@ document.querySelectorAll('.place-card').forEach(card=>{
   card.addEventListener('click', ()=>{
     document.querySelectorAll('.place-card').forEach(c=>c.classList.remove('selected'));
     card.classList.add('selected');
-    chosenPlace = card.dataset.place;
-    customPlaceInput.value = "";
-    choiceMsg.textContent = excellentLines[Math.floor(Math.random()*excellentLines.length)] + " — " + chosenPlace;
+    chosenType = card.dataset.place;
+    confirmBtn.disabled = false;
+    choiceMsg.textContent = excellentLines[Math.floor(Math.random()*excellentLines.length)] + " — " + chosenType;
+
+    if(locationWrap.style.display === 'none'){
+      locationWrap.style.display = 'flex';
+      locationWrap.style.animation = 'floatIn .4s ease';
+      setTimeout(()=> customPlaceInput.focus(), 350);
+    }
   });
 });
 customPlaceInput.addEventListener('input', ()=>{
-  if(customPlaceInput.value.trim()){
-    document.querySelectorAll('.place-card').forEach(c=>c.classList.remove('selected'));
-    chosenPlace = customPlaceInput.value.trim();
-    choiceMsg.textContent = "Love it — " + chosenPlace + " it is! 💕";
-  } else if(!document.querySelector('.place-card.selected')){
-    chosenPlace = "";
-    choiceMsg.textContent = "";
-  }
+  chosenLocation = customPlaceInput.value.trim();
 });
 
 /* ====== Step 3: Send confirmations (direct, no email app) ====== */
@@ -437,7 +438,9 @@ confirmBtn.addEventListener('click', ()=>{
   confirmBtn.disabled = true;
   confirmBtn.innerHTML = 'Sending... <i class="bi bi-arrow-repeat"></i>';
 
-  const finalPlace = chosenPlace || "Surprise me — you decide! 🎁";
+  const finalPlace = chosenLocation
+    ? `${chosenType} — ${chosenLocation}`
+    : `${chosenType} (location: surprise me, you decide! 🎁)`;
 
   const doneIcon = document.getElementById('doneIcon');
   const doneTitle = document.getElementById('doneTitle');

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Evening Together ❤️</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:system-ui;background:linear-gradient(135deg,#ff5f9e,#8e44ad);min-height:100vh;overflow:hidden;color:#fff}
+.heart{position:fixed;color:#fff4;font-size:22px;animation:float 10s linear infinite}
+@keyframes float{from{transform:translateY(105vh)}to{transform:translateY(-20vh)}}
+.cardx{backdrop-filter:blur(10px);background:#ffffff18;border:1px solid #ffffff30;border-radius:24px;padding:22px}
+.screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px}
+.screen.active{display:flex}
+.choice{cursor:pointer;border:2px solid #fff3;border-radius:18px;padding:18px;text-align:center;transition:.25s}
+.choice:hover,.choice.sel{background:#fff;color:#c2185b;transform:scale(1.03)}
+.big{font-size:4rem;animation:beat 1s infinite}
+@keyframes beat{50%{transform:scale(1.15)}}
+#celebrate{font-size:3rem;display:none}
+</style>
+</head>
+<body>
+<div id="hearts"></div>
+
+<section class="screen active" id="s1">
+<div class="cardx text-center w-100" style="max-width:420px">
+<div class="big">❤️</div>
+<h2>Hey Beautiful...</h2>
+<p>I have something special to ask you.</p>
+<button class="btn btn-light w-100" onclick="next('s2')">Tap to Continue</button>
+</div>
+</section>
+
+<section class="screen" id="s2">
+<div class="cardx text-center w-100" style="max-width:420px">
+<h2>Will you go out with me this evening?</h2>
+<div class="display-2">🥹</div>
+<button class="btn btn-danger w-100 my-2" onclick="yes()">Yes ❤️</button>
+<button class="btn btn-outline-light w-100" onclick="nope()">No 💔</button>
+</div>
+</section>
+
+<section class="screen" id="yesScreen">
+<div class="cardx text-center w-100" style="max-width:500px">
+<div id="celebrate">🎉👏❤️🎉👏❤️</div>
+<h2>You just made my day! ❤️</h2>
+<p>Where shall we go?</p>
+<div class="row g-2">
+<div class="col-6"><div class="choice" onclick="pick(this,'Coffee ☕')"><i class="bi bi-cup-hot"></i><br>Coffee</div></div>
+<div class="col-6"><div class="choice" onclick="pick(this,'Pizza 🍕')"><i class="bi bi-pie-chart-fill"></i><br>Pizza</div></div>
+<div class="col-6"><div class="choice" onclick="pick(this,'Movie 🎬')"><i class="bi bi-film"></i><br>Movie</div></div>
+<div class="col-6"><div class="choice" onclick="pick(this,'Beach 🌅')"><i class="bi bi-sunrise"></i><br>Beach</div></div>
+</div>
+<div class="mt-3">
+<select id="time" class="form-select">
+<option>5:00 PM</option><option>6:00 PM</option><option selected>7:00 PM</option><option>8:00 PM</option>
+</select>
+</div>
+<textarea id="msg" class="form-control mt-3" placeholder="A little message..."></textarea>
+<input id="your" type="hidden" value="sachithwijesekara@gmail.com">
+<label class="mt-3">Her Email <span style="color:#ffd6d6">*</span></label><input id="her" type="email" required class="form-control mt-2" placeholder="Enter her email address">
+<button class="btn btn-light w-100 mt-3" onclick="summary()">Continue</button>
+</div>
+</section>
+
+<section class="screen" id="sum">
+<div class="cardx w-100" style="max-width:500px">
+<h2 class="text-center">❤️ Date Summary</h2>
+<div id="out"></div>
+<div class="alert alert-warning mt-3">
+This demo does not send emails by itself. Connect EmailJS to the button below to send confirmation emails.
+</div>
+<button class="btn btn-danger w-100" onclick="alert('Connect EmailJS here to send emails.')">Send Confirmation ❤️</button>
+</div>
+</section>
+
+<section class="screen" id="noScreen">
+<div class="cardx text-center w-100" style="max-width:420px">
+<div class="display-1">😢</div>
+<h2>That's okay.</h2>
+<p>Your happiness matters most. Maybe another day. ❤️</p>
+<button class="btn btn-light" onclick="next('s2')">Go Back</button>
+</div>
+</section>
+
+<script>
+let place="";
+for(let i=0;i<35;i++){let d=document.createElement('div');d.className='heart';d.innerHTML='❤';d.style.left=Math.random()*100+'vw';d.style.animationDuration=(6+Math.random()*8)+'s';d.style.animationDelay=(Math.random()*8)+'s';document.getElementById('hearts').appendChild(d);}
+function next(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function yes(){next('yesScreen');document.getElementById('celebrate').style.display='block';if(navigator.vibrate)navigator.vibrate([150,80,150]);}
+function nope(){next('noScreen')}
+function pick(el,p){document.querySelectorAll('.choice').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');place=p;}
+function summary(){
+if(!her.value.trim()){alert('Please enter her email address.');her.focus();return;}
+
+document.getElementById('out').innerHTML=`<p><b>Place:</b> ${place||'Not selected'}</p>
+<p><b>Time:</b> ${time.value}</p>
+<p><b>Message:</b> ${msg.value||'-'}</p>
+<p><b>Your Email:</b> ${your.value}</p>
+<p><b>Her Email:</b> ${her.value}</p>`;
+next('sum');
+}
+</script>
+</body>
+</html>

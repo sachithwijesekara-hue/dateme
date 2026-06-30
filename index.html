@@ -1,107 +1,467 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Our Evening Together ❤️</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>An Evening Together? 🌆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <style>
-body{margin:0;font-family:system-ui;background:linear-gradient(135deg,#ff5f9e,#8e44ad);min-height:100vh;overflow:hidden;color:#fff}
-.heart{position:fixed;color:#fff4;font-size:22px;animation:float 10s linear infinite}
-@keyframes float{from{transform:translateY(105vh)}to{transform:translateY(-20vh)}}
-.cardx{backdrop-filter:blur(10px);background:#ffffff18;border:1px solid #ffffff30;border-radius:24px;padding:22px}
-.screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px}
-.screen.active{display:flex}
-.choice{cursor:pointer;border:2px solid #fff3;border-radius:18px;padding:18px;text-align:center;transition:.25s}
-.choice:hover,.choice.sel{background:#fff;color:#c2185b;transform:scale(1.03)}
-.big{font-size:4rem;animation:beat 1s infinite}
-@keyframes beat{50%{transform:scale(1.15)}}
-#celebrate{font-size:3rem;display:none}
+  :root{
+    --blush:#ffe3ea;
+    --cream:#fff7f3;
+    --rose:#ff4d6d;
+    --rose-deep:#c9184a;
+    --wine:#590d22;
+    --gold:#d4af37;
+    --soft:#ffc2d1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(160deg,var(--blush) 0%, var(--cream) 55%, var(--soft) 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+    color:var(--wine);
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+  h1,h2{font-family:'Playfair Display',serif;}
+
+  #heartsCanvas{
+    position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;
+  }
+
+  .app{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:480px;
+  }
+
+  .screen{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:28px;
+    padding:38px 26px;
+    box-shadow:0 20px 60px rgba(89,13,34,0.18);
+    animation:floatIn .6s ease;
+  }
+  .screen.active{display:flex;}
+
+  @keyframes floatIn{
+    from{opacity:0; transform:translateY(24px) scale(.97);}
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+
+  .icon-top{
+    font-size:2.6rem;
+    color:var(--rose);
+    margin-bottom:14px;
+  }
+  .pulse{animation:pulseHeart 1.4s ease-in-out infinite;}
+  @keyframes pulseHeart{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.18);}
+  }
+
+  h1.title{font-size:1.7rem; color:var(--rose-deep); margin-bottom:6px; font-weight:700;}
+  h2.subtitle{font-size:1.25rem; font-weight:500; margin-bottom:20px; line-height:1.4;}
+  p.note{font-size:.92rem; color:#8a4a5a; margin-bottom:18px; line-height:1.5;}
+
+  /* Inputs */
+  .input-wrap{width:100%; margin-bottom:14px; position:relative;}
+  input[type="email"]{
+    width:100%;
+    padding:14px 16px 14px 44px;
+    border-radius:16px;
+    border:2px solid var(--soft);
+    background:#fff;
+    font-size:1rem;
+    font-family:'Poppins',sans-serif;
+    color:var(--wine);
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  input[type="email"]:focus{
+    border-color:var(--rose);
+    box-shadow:0 0 0 4px rgba(255,77,109,0.15);
+  }
+  .input-wrap i{
+    position:absolute; left:15px; top:50%; transform:translateY(-50%);
+    color:var(--rose); font-size:1.1rem;
+  }
+  .error-msg{
+    color:var(--rose-deep);
+    font-size:.85rem;
+    min-height:18px;
+    margin:-4px 0 10px 4px;
+    align-self:flex-start;
+  }
+
+  /* Buttons */
+  .btn{
+    border:none;
+    border-radius:50px;
+    padding:14px 28px;
+    font-family:'Poppins',sans-serif;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    color:#fff;
+    box-shadow:0 10px 24px rgba(201,24,74,0.35);
+    width:100%;
+    justify-content:center;
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-primary:disabled{
+    opacity:.45; cursor:not-allowed; transform:none; box-shadow:none;
+  }
+
+  .btn-row{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    position:relative;
+    width:100%;
+    min-height:64px;
+    margin-top:6px;
+  }
+  .btn-yes{
+    background:linear-gradient(135deg,#ff7096,var(--rose-deep));
+    color:#fff;
+    font-size:1.08rem;
+    padding:15px 34px;
+    box-shadow:0 10px 26px rgba(201,24,74,0.4);
+  }
+  .btn-no{
+    background:#fff;
+    color:var(--wine);
+    border:2px solid var(--soft);
+    position:relative;
+  }
+  #noWrap{position:relative;}
+
+  .hint{font-size:.8rem; color:#a36; margin-top:14px; opacity:.8;}
+
+  /* Places grid */
+  .places-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    width:100%;
+    margin-bottom:18px;
+  }
+  .place-card{
+    background:#fff;
+    border:2px solid var(--soft);
+    border-radius:18px;
+    padding:16px 10px;
+    cursor:pointer;
+    transition:all .2s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .place-card i{font-size:1.6rem; color:var(--rose);}
+  .place-card span{font-size:.85rem; font-weight:500;}
+  .place-card:hover{transform:translateY(-3px); border-color:var(--rose);}
+  .place-card.selected{
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    border-color:var(--rose-deep);
+  }
+  .place-card.selected i, .place-card.selected span{color:#fff;}
+
+  .choice-msg{
+    min-height:24px;
+    font-size:.95rem;
+    font-weight:600;
+    color:var(--rose-deep);
+    margin-bottom:14px;
+  }
+
+  /* Overlays for effects */
+  .fx-layer{
+    position:fixed; inset:0; pointer-events:none; z-index:50; overflow:hidden;
+  }
+  .fx-piece{
+    position:absolute; font-size:1.6rem; top:-40px; user-select:none;
+  }
+
+  footer.brand{
+    margin-top:20px;
+    font-size:.72rem;
+    color:#b07;
+    opacity:.6;
+  }
+
+  @media (max-width:380px){
+    .screen{padding:30px 18px;}
+    h1.title{font-size:1.45rem;}
+    h2.subtitle{font-size:1.08rem;}
+    .places-grid{grid-template-columns:1fr 1fr; gap:10px;}
+  }
 </style>
 </head>
 <body>
-<div id="hearts"></div>
 
-<section class="screen active" id="s1">
-<div class="cardx text-center w-100" style="max-width:420px">
-<div class="big">❤️</div>
-<h2>Hey Beautiful...</h2>
-<p>I have something special to ask you.</p>
-<button class="btn btn-light w-100" onclick="next('s2')">Tap to Continue</button>
-</div>
-</section>
+<canvas id="heartsCanvas"></canvas>
+<div class="fx-layer" id="fxLayer"></div>
 
-<section class="screen" id="s2">
-<div class="cardx text-center w-100" style="max-width:420px">
-<h2>Will you go out with me this evening?</h2>
-<div class="display-2">🥹</div>
-<button class="btn btn-danger w-100 my-2" onclick="yes()">Yes ❤️</button>
-<button class="btn btn-outline-light w-100" onclick="nope()">No 💔</button>
-</div>
-</section>
+<div class="app">
 
-<section class="screen" id="yesScreen">
-<div class="cardx text-center w-100" style="max-width:500px">
-<div id="celebrate">🎉👏❤️🎉👏❤️</div>
-<h2>You just made my day! ❤️</h2>
-<p>Where shall we go?</p>
-<div class="row g-2">
-<div class="col-6"><div class="choice" onclick="pick(this,'Coffee ☕')"><i class="bi bi-cup-hot"></i><br>Coffee</div></div>
-<div class="col-6"><div class="choice" onclick="pick(this,'Pizza 🍕')"><i class="bi bi-pie-chart-fill"></i><br>Pizza</div></div>
-<div class="col-6"><div class="choice" onclick="pick(this,'Movie 🎬')"><i class="bi bi-film"></i><br>Movie</div></div>
-<div class="col-6"><div class="choice" onclick="pick(this,'Beach 🌅')"><i class="bi bi-sunrise"></i><br>Beach</div></div>
-</div>
-<div class="mt-3">
-<select id="time" class="form-select">
-<option>5:00 PM</option><option>6:00 PM</option><option selected>7:00 PM</option><option>8:00 PM</option>
-</select>
-</div>
-<textarea id="msg" class="form-control mt-3" placeholder="A little message..."></textarea>
-<input id="your" type="hidden" value="sachithwijesekara@gmail.com">
-<label class="mt-3">Her Email <span style="color:#ffd6d6">*</span></label><input id="her" type="email" required class="form-control mt-2" placeholder="Enter her email address">
-<button class="btn btn-light w-100 mt-3" onclick="summary()">Continue</button>
-</div>
-</section>
+  <!-- Step 1: Her email gate -->
+  <section class="screen active" id="emailGate">
+    <i class="bi bi-envelope-heart-fill icon-top"></i>
+    <h1 class="title">Before we begin...</h1>
+    <p class="note">Enter her email so the magic can find its way to her ✨</p>
+    <div class="input-wrap">
+      <i class="bi bi-heart"></i>
+      <input type="email" id="herEmail" placeholder="her@email.com" required autocomplete="off">
+    </div>
+    <div class="error-msg" id="emailError"></div>
+    <button class="btn btn-primary" id="continueBtn">Continue <i class="bi bi-arrow-right-circle-fill"></i></button>
+  </section>
 
-<section class="screen" id="sum">
-<div class="cardx w-100" style="max-width:500px">
-<h2 class="text-center">❤️ Date Summary</h2>
-<div id="out"></div>
-<div class="alert alert-warning mt-3">
-This demo does not send emails by itself. Connect EmailJS to the button below to send confirmation emails.
-</div>
-<button class="btn btn-danger w-100" onclick="alert('Connect EmailJS here to send emails.')">Send Confirmation ❤️</button>
-</div>
-</section>
+  <!-- Step 2: The Ask -->
+  <section class="screen" id="askScreen">
+    <i class="bi bi-heart-fill icon-top pulse"></i>
+    <h1 class="title">Hey gorgeous,</h1>
+    <h2 class="subtitle">Will you go out with me this evening? 🌆</h2>
+    <div class="btn-row">
+      <button class="btn btn-yes" id="yesBtn"><i class="bi bi-emoji-heart-eyes-fill"></i> Yes</button>
+      <div id="noWrap">
+        <button class="btn btn-no" id="noBtn"><i class="bi bi-emoji-frown"></i> No</button>
+      </div>
+    </div>
+    <p class="hint" id="askHint">psst... try clicking "No" 👀</p>
+  </section>
 
-<section class="screen" id="noScreen">
-<div class="cardx text-center w-100" style="max-width:420px">
-<div class="display-1">😢</div>
-<h2>That's okay.</h2>
-<p>Your happiness matters most. Maybe another day. ❤️</p>
-<button class="btn btn-light" onclick="next('s2')">Go Back</button>
+  <!-- Step 3: Place selection -->
+  <section class="screen" id="placeScreen">
+    <i class="bi bi-stars icon-top"></i>
+    <h1 class="title">Yay! She said yes! 🎉</h1>
+    <h2 class="subtitle" style="font-size:1.05rem;">Now, where should we go?</h2>
+    <div class="places-grid" id="placesGrid">
+      <div class="place-card" data-place="Sunset Beach Walk"><i class="bi bi-sunset"></i><span>Beach Sunset</span></div>
+      <div class="place-card" data-place="Cozy Café Date"><i class="bi bi-cup-hot-fill"></i><span>Cozy Café</span></div>
+      <div class="place-card" data-place="Candlelight Dinner"><i class="bi bi-candle"></i><span>Dinner</span></div>
+      <div class="place-card" data-place="Movie Night"><i class="bi bi-film"></i><span>Movie Night</span></div>
+      <div class="place-card" data-place="Garden Stroll"><i class="bi bi-flower2"></i><span>Garden Walk</span></div>
+      <div class="place-card" data-place="Surprise Me"><i class="bi bi-gift-fill"></i><span>Surprise Me</span></div>
+    </div>
+    <div class="choice-msg" id="choiceMsg"></div>
+    <button class="btn btn-primary" id="confirmBtn" disabled>Confirm &amp; Send <i class="bi bi-send-heart-fill"></i></button>
+  </section>
+
+  <!-- Step 4: Done -->
+  <section class="screen" id="doneScreen">
+    <i class="bi bi-check-circle-fill icon-top" style="color:#2ecc71;"></i>
+    <h1 class="title">It's a date! 💌</h1>
+    <p class="note" id="doneNote">Your email app is opening with the confirmation ready. Just hit send!</p>
+  </section>
+
+  <footer class="brand">made with <i class="bi bi-heart-fill"></i></footer>
 </div>
-</section>
 
 <script>
-let place="";
-for(let i=0;i<35;i++){let d=document.createElement('div');d.className='heart';d.innerHTML='❤';d.style.left=Math.random()*100+'vw';d.style.animationDuration=(6+Math.random()*8)+'s';d.style.animationDelay=(Math.random()*8)+'s';document.getElementById('hearts').appendChild(d);}
-function next(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function yes(){next('yesScreen');document.getElementById('celebrate').style.display='block';if(navigator.vibrate)navigator.vibrate([150,80,150]);}
-function nope(){next('noScreen')}
-function pick(el,p){document.querySelectorAll('.choice').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');place=p;}
-function summary(){
-if(!her.value.trim()){alert('Please enter her email address.');her.focus();return;}
+/* ====== CONFIG (kept out of the visible UI) ====== */
+const MY_EMAIL = "sachithwijesekara@gmail.com"; // never displayed on screen
 
-document.getElementById('out').innerHTML=`<p><b>Place:</b> ${place||'Not selected'}</p>
-<p><b>Time:</b> ${time.value}</p>
-<p><b>Message:</b> ${msg.value||'-'}</p>
-<p><b>Your Email:</b> ${your.value}</p>
-<p><b>Her Email:</b> ${her.value}</p>`;
-next('sum');
+/* ====== Floating hearts background ====== */
+const canvas = document.getElementById('heartsCanvas');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+let hearts = [];
+function makeHeart(){
+  return {
+    x: Math.random()*canvas.width,
+    y: canvas.height + 40 + Math.random()*200,
+    size: 10 + Math.random()*18,
+    speed: 0.4 + Math.random()*0.9,
+    drift: (Math.random()-0.5)*0.6,
+    opacity: 0.15 + Math.random()*0.35
+  };
 }
+for(let i=0;i<22;i++) hearts.push(makeHeart());
+
+function drawHeart(x,y,size,opacity){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.scale(size/20, size/20);
+  ctx.beginPath();
+  ctx.moveTo(0,5);
+  ctx.bezierCurveTo(0,-2,-10,-2,-10,6);
+  ctx.bezierCurveTo(-10,14,0,18,0,22);
+  ctx.bezierCurveTo(0,18,10,14,10,6);
+  ctx.bezierCurveTo(10,-2,0,-2,0,5);
+  ctx.fillStyle = `rgba(255,77,109,${opacity})`;
+  ctx.fill();
+  ctx.restore();
+}
+
+function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hearts.forEach(h=>{
+    h.y -= h.speed;
+    h.x += h.drift;
+    if(h.y < -30){ Object.assign(h, makeHeart(), {y: canvas.height+30}); }
+    drawHeart(h.x,h.y,h.size,h.opacity);
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* ====== Screen navigation ====== */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ====== Step 1: her email ====== */
+let herEmailValue = "";
+const herEmailInput = document.getElementById('herEmail');
+const emailError = document.getElementById('emailError');
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+document.getElementById('continueBtn').addEventListener('click', ()=>{
+  const val = herEmailInput.value.trim();
+  if(!val){
+    emailError.textContent = "Her email is required to continue 💌";
+    herEmailInput.focus();
+    return;
+  }
+  if(!emailPattern.test(val)){
+    emailError.textContent = "Hmm, that doesn't look like a valid email";
+    herEmailInput.focus();
+    return;
+  }
+  emailError.textContent = "";
+  herEmailValue = val;
+  showScreen('askScreen');
+});
+herEmailInput.addEventListener('input', ()=> emailError.textContent = "");
+
+/* ====== Step 2: Yes / No ====== */
+const noBtn = document.getElementById('noBtn');
+const noWrap = document.getElementById('noWrap');
+const askScreenEl = document.getElementById('askScreen');
+const askHint = document.getElementById('askHint');
+let dodgeCount = 0;
+const maxDodge = 4;
+
+function dodgeNo(){
+  if(dodgeCount >= maxDodge) return;
+  dodgeCount++;
+  const rect = askScreenEl.getBoundingClientRect();
+  const maxX = Math.max(0, rect.width - 130);
+  const maxY = Math.max(0, rect.height - 220);
+  const randX = (Math.random()*maxX) - (maxX/2);
+  const randY = (Math.random()* (maxY*0.4));
+  noWrap.style.transition = 'transform .25s ease';
+  noWrap.style.transform = `translate(${randX}px, ${-randY}px)`;
+  const hints = [
+    "nope, try again 😏",
+    "she's a bit shy, the button moved 😅",
+    "okay okay, getting harder now 😂",
+    "last chance to dodge... 💘"
+  ];
+  askHint.textContent = hints[Math.min(dodgeCount-1, hints.length-1)];
+}
+noBtn.addEventListener('mouseenter', dodgeNo);
+noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodgeNo(); }, {passive:false});
+
+noBtn.addEventListener('click', ()=>{
+  // only reachable after dodge limit, or quick click on slow devices
+  sadFaceRain();
+  askHint.textContent = "Aww... maybe ask again? 🥺";
+});
+
+const fxLayer = document.getElementById('fxLayer');
+function spawnFx(symbols, count, duration){
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className = 'fx-piece';
+      el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      el.style.left = Math.random()*100 + 'vw';
+      el.style.fontSize = (1.2 + Math.random()*1.6) + 'rem';
+      el.style.animation = `fall ${duration + Math.random()*1.2}s linear forwards`;
+      fxLayer.appendChild(el);
+      setTimeout(()=> el.remove(), (duration+1.5)*1000);
+    }, i*40);
+  }
+}
+const fallKeyframes = `@keyframes fall{
+  0%{ transform:translateY(-40px) rotate(0deg); opacity:1; }
+  100%{ transform:translateY(110vh) rotate(360deg); opacity:0.2; }
+}`;
+const styleTag = document.createElement('style');
+styleTag.textContent = fallKeyframes;
+document.head.appendChild(styleTag);
+
+function sadFaceRain(){ spawnFx(['😢','💔','😞'], 18, 3); }
+function clapsAndConfetti(){
+  spawnFx(['👏','🎉','💖','✨','💕'], 26, 2.6);
+}
+
+document.getElementById('yesBtn').addEventListener('click', ()=>{
+  clapsAndConfetti();
+  setTimeout(()=> showScreen('placeScreen'), 900);
+});
+
+/* ====== Step 3: Place selection ====== */
+let chosenPlace = "";
+const choiceMsg = document.getElementById('choiceMsg');
+const confirmBtn = document.getElementById('confirmBtn');
+const excellentLines = [
+  "Excellent choice! 🌟",
+  "Perfect pick! 😍",
+  "Ooh, lovely choice! 💕",
+  "Great taste! 🥂"
+];
+document.querySelectorAll('.place-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    document.querySelectorAll('.place-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    chosenPlace = card.dataset.place;
+    choiceMsg.textContent = excellentLines[Math.floor(Math.random()*excellentLines.length)] + " — " + chosenPlace;
+    confirmBtn.disabled = false;
+  });
+});
+
+/* ====== Step 4: Send confirmation ====== */
+confirmBtn.addEventListener('click', ()=>{
+  const subject = encodeURIComponent("She said YES! Our evening plan 💌");
+  const body = encodeURIComponent(
+    `Great news!\n\nThe evening date is confirmed.\nDestination: ${chosenPlace}\nHer email: ${herEmailValue}\n\nGet ready for an unforgettable evening! 💕`
+  );
+  const mailto = `mailto:${encodeURIComponent(MY_EMAIL)}?cc=${encodeURIComponent(herEmailValue)}&subject=${subject}&body=${body}`;
+  window.location.href = mailto;
+  showScreen('doneScreen');
+  clapsAndConfetti();
+});
 </script>
 </body>
 </html>

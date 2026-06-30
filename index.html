@@ -199,6 +199,50 @@
     margin-bottom:14px;
   }
 
+  .location-block{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:4px 0 18px;
+  }
+  .location-label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:600;
+    font-size:.95rem;
+    color:var(--rose-deep);
+    margin-bottom:10px;
+  }
+  .location-input{
+    width:100%;
+    text-align:center;
+    padding:15px 18px;
+    border-radius:18px;
+    border:2px solid var(--rose);
+    background:#fff;
+    font-size:1rem;
+    font-family:'Poppins',sans-serif;
+    color:var(--wine);
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .location-input::placeholder{
+    color:#c98;
+    font-size:.92rem;
+  }
+  .location-input:focus{
+    border-color:var(--rose-deep);
+    box-shadow:0 0 0 5px rgba(255,77,109,0.18);
+  }
+  .location-hint{
+    font-size:.78rem;
+    color:#a36;
+    margin-top:8px;
+    opacity:.85;
+  }
+
   /* Overlays for effects */
   .fx-layer{
     position:fixed; inset:0; pointer-events:none; z-index:50; overflow:hidden;
@@ -256,9 +300,10 @@
       <div class="place-card" data-place="Drink"><i class="bi bi-cup-straw"></i><span>Drink</span></div>
       <div class="place-card" data-place="Movie"><i class="bi bi-film"></i><span>Movie</span></div>
     </div>
-    <div class="input-wrap" id="locationWrap" style="display:none;">
-      <i class="bi bi-geo-alt-fill"></i>
-      <input type="text" id="customPlace" placeholder="Type the location (or leave blank and I'll decide)">
+    <div class="location-block" id="locationWrap" style="display:none;">
+      <div class="location-label"><i class="bi bi-geo-alt-fill"></i> Where exactly?</div>
+      <input type="text" id="customPlace" class="location-input" placeholder="Type a location (optional)">
+      <p class="location-hint">Leave blank and I'll decide ✨</p>
     </div>
     <div class="choice-msg" id="choiceMsg"></div>
     <button class="btn btn-primary" id="confirmBtn" disabled>Submit <i class="bi bi-send-heart-fill"></i></button>
@@ -278,7 +323,7 @@
 /* ====== CONFIG (kept out of the visible UI) ====== */
 const MY_EMAIL = "sachithwijesekara@gmail.com"; // never displayed on screen
 const HER_NAME = "Malsha";
-const HER_EMAIL = "sachith.wijesekara@icloud.com"; // update with Malsha's real email
+const HER_EMAIL = "sachithwijesekara@gmail.com"; // update with Malsha's real email
 const herEmailValue = HER_EMAIL;
 
 /* ====== Floating hearts background ====== */
@@ -496,7 +541,7 @@ confirmBtn.addEventListener('click', ()=>{
     doneIcon.className = 'bi bi-check-circle-fill icon-top';
     doneIcon.style.color = '#2ecc71';
     doneTitle.textContent = "It's a date! 💌";
-    doneNote.textContent = 'Both confirmations were sent — no app needed!';
+    doneNote.textContent = '';
     clapsAndConfetti();
   })
   .catch(err => {
